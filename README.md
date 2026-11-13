@@ -23,7 +23,7 @@ Felles zsh-oppsett for Mac-en og Linux-maskinene mine, slik at terminalen ser li
 
 | Fil | Hva |
 |---|---|
-| `.zshrc` | Laster Oh My Zsh, temaet og pluginene |
+| `.zshrc` | Laster Oh My Zsh, temaet og pluginene, og til slutt `~/.zshrc.local` hvis den finnes |
 | `.p10k.zsh` | All konfigurasjon av prompten (farger, segmenter, layout) |
 | `install.sh` | Installerer avhengigheter og lenker inn filene over |
 
@@ -70,6 +70,9 @@ I bruk: **Hack Nerd Font**, størrelse 14 (`brew install --cask font-hack-nerd-f
 Fonten settes per iTerm2-profil, så sjekk at alle profilene du bruker har en Nerd Font.
 
 ## Endre oppsettet
+
+Ting som bare gjelder én maskin (f.eks. `brew`, aliaser for en server) legges i `~/.zshrc.local`.
+Den ligger ikke i repoet og lastes sist i `.zshrc`.
 
 Fordi `~/.zshrc` og `~/.p10k.zsh` er symlenker, endrer du filene i repoet direkte:
 
