@@ -63,7 +63,9 @@ Skriptet kan trygt kjøres flere ganger.
 
 Ikonene og pilene i prompten krever en **Nerd Font** i terminalprogrammet – men bare på maskinen du sitter ved. Servere du SSH-er til trenger ingen font.
 
-Anbefalt: **MesloLGS NF** (installeres med `p10k configure`, eller se [Powerlevel10k-fonter](https://github.com/romkatv/powerlevel10k#fonts)). Velg den i iTerm2 under *Settings → Profiles → Text → Font*.
+I bruk: **Hack Nerd Font**, størrelse 14 (`brew install --cask font-hack-nerd-font`). Velg den i iTerm2 under *Settings → Profiles → Text → Font*. Andre Nerd Fonts fungerer også, f.eks. MesloLGS NF som Powerlevel10k anbefaler.
+
+Fonten settes per iTerm2-profil, så sjekk at alle profilene du bruker har en Nerd Font.
 
 ## Endre oppsettet
 
