@@ -33,8 +33,8 @@ Felles zsh-oppsett for Mac-en og Linux-maskinene mine, slik at terminalen ser li
 
 ```sh
 su -c 'apt install zsh git'        # eller: sudo apt install zsh git
-git clone https://github.com/mojaco/dotfiles.git /opt/development/dotfiles
-/opt/development/dotfiles/install.sh
+git clone https://github.com/mojaco/dotfiles.git ~/dotfiles
+~/dotfiles/install.sh
 chsh -s /usr/bin/zsh               # gjør zsh til standardskall
 ```
 
@@ -50,6 +50,8 @@ git clone https://github.com/mojaco/dotfiles.git ~/dotfiles
 ```
 
 Repoet kan ligge hvor som helst – `install.sh` lenker til mappen det selv ligger i.
+Standard er `~/dotfiles`. Unntak: på dev-maskinen ligger det i `/opt/development/dotfiles`
+sammen med de andre prosjektene.
 
 ### Hva `install.sh` gjør
 
@@ -80,7 +82,7 @@ cd ~/dotfiles && git commit -am "Beskriv endringen" && git push
 Hent endringen på de andre maskinene:
 
 ```sh
-cd /opt/development/dotfiles && git pull    # (~/dotfiles på Mac)
+cd ~/dotfiles && git pull
 ```
 
 Åpne et nytt terminalvindu etterpå.
