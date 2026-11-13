@@ -49,6 +49,29 @@ git clone https://github.com/mojaco/dotfiles.git ~/dotfiles
 ~/dotfiles/install.sh
 ```
 
+### Container (Docker o.l.)
+
+Repoet er offentlig, så kloning krever ingen GitHub-innlogging. Containere kjører som regel som root uten `sudo` og `chsh`, så start zsh direkte i stedet:
+
+```sh
+apt-get update && apt-get install -y zsh git ca-certificates
+git clone https://github.com/mojaco/dotfiles.git ~/dotfiles
+~/dotfiles/install.sh
+exec zsh
+```
+
+Eller i en `Dockerfile`:
+
+```dockerfile
+RUN apt-get update && apt-get install -y --no-install-recommends zsh git ca-certificates \
+ && git clone --depth=1 https://github.com/mojaco/dotfiles.git /root/dotfiles \
+ && /root/dotfiles/install.sh
+SHELL ["/bin/zsh", "-c"]
+CMD ["zsh"]
+```
+
+Meldingen om `chsh` fra `install.sh` kan ignoreres i en container. `gitstatusd` lastes ned første gang zsh starter, så containeren trenger internett da.
+
 Repoet kan ligge hvor som helst – `install.sh` lenker til mappen det selv ligger i.
 Standard er `~/dotfiles`. Unntak: på dev-maskinen ligger det i `/opt/development/dotfiles`
 sammen med de andre prosjektene.
@@ -73,6 +96,8 @@ Fonten settes per iTerm2-profil, så sjekk at alle profilene du bruker har en Ne
 
 Ting som bare gjelder én maskin (f.eks. `brew`, aliaser for en server) legges i `~/.zshrc.local`.
 Den ligger ikke i repoet og lastes sist i `.zshrc`.
+
+> **Repoet er offentlig.** Ikke legg inn passord, tokens, interne IP-adresser eller vertsnavn. Slikt hører hjemme i `~/.zshrc.local`.
 
 Fordi `~/.zshrc` og `~/.p10k.zsh` er symlenker, endrer du filene i repoet direkte:
 
@@ -117,6 +142,7 @@ Veiviseren skriver `.p10k.zsh` helt på nytt, og justeringene over (to linjer, t
 | Problem | Løsning |
 |---|---|
 | Firkanter eller rare tegn i prompten | Terminalprogrammet mangler Nerd Font – se [Font](#font) |
-| `git pull` spør om brukernavn / *could not read Username* | Maskinen mangler GitHub-innlogging. Enklest: `gh auth login` og `gh auth setup-git` (macOS: `brew install gh`) |
+| `git push` spør om brukernavn / *could not read Username* | Kloning og `git pull` trenger ingen innlogging, men `push` gjør det. Enklest: `gh auth login` og `gh auth setup-git` (macOS: `brew install gh`) |
+| `git pull` feiler med *divergent branches* etter historikk-omskriving | `git fetch && git reset --hard origin/main` (lokale, ikke-pushede endringer forsvinner) |
 | Fortsatt bash etter installasjon | Kjør `chsh -s "$(command -v zsh)"` og logg ut og inn |
 | Vil tilbake til gammelt oppsett | Gjenopprett `~/.zshrc.bak-*` og `~/.p10k.zsh.bak-*` |
