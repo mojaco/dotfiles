@@ -1,57 +1,57 @@
 # dotfiles
 
-Felles zsh-oppsett for Mac-en og Linux-maskinene mine, slik at terminalen ser lik ut og oppfører seg likt overalt.
+Shared zsh setup for my Mac and Linux machines, so the terminal looks and behaves the same everywhere.
 
-- **[Oh My Zsh](https://ohmyz.sh/)** – rammeverk for zsh
-- **[Powerlevel10k](https://github.com/romkatv/powerlevel10k)** – temaet som tegner prompten
-- **Plugins:** `git`, [`zsh-syntax-highlighting`](https://github.com/zsh-users/zsh-syntax-highlighting) (farger på kommandoer mens du skriver) og [`zsh-autosuggestions`](https://github.com/zsh-users/zsh-autosuggestions) (foreslår kommandoer fra historikken, godta med →)
+- **[Oh My Zsh](https://ohmyz.sh/)** – zsh framework
+- **[Powerlevel10k](https://github.com/romkatv/powerlevel10k)** – the theme that draws the prompt
+- **Plugins:** `git`, [`zsh-syntax-highlighting`](https://github.com/zsh-users/zsh-syntax-highlighting) (colors commands as you type) and [`zsh-autosuggestions`](https://github.com/zsh-users/zsh-autosuggestions) (suggests commands from history, accept with →)
 
-## Slik ser prompten ut
+## What the prompt looks like
 
 ```
 ╭─  ~/dotfiles   main ─────────────────────────── ✔  mojaco@dataservices ─╮
 ╰─ ❯
 ```
 
-- **To linjer:** mappe og git-status øverst, kommandoen skrives på linjen under. Markøren står alltid til venstre, uansett hvor lang stien er.
-- **Tom linje før hver prompt**, så det er luft mellom kommandoene.
-- **Transient prompt:** gamle prompter krympes til bare `❯`, så historikken blir kompakt.
-- **`❯` er grønn** når forrige kommando gikk bra og **rød** når den feilet.
-- **`bruker@maskin` vises i oransje bare over SSH** (eller som root). Ser du ikke noe maskinnavn, er du på den lokale maskinen.
+- **Two lines:** directory and git status on top, the command goes on the line below. The cursor always starts at the left, no matter how long the path is.
+- **Blank line before each prompt**, so there is space between commands.
+- **Transient prompt:** old prompts shrink to just `❯`, keeping the scrollback compact.
+- **`❯` is green** when the previous command succeeded and **red** when it failed.
+- **`user@host` is shown in orange only over SSH** (or as root). If you see no hostname, you are on the local machine.
 
-## Innhold
+## Contents
 
-| Fil | Hva |
+| File | Purpose |
 |---|---|
-| `.zshrc` | Laster Oh My Zsh, temaet og pluginene, og til slutt `~/.zshrc.local` hvis den finnes |
-| `.p10k.zsh` | All konfigurasjon av prompten (farger, segmenter, layout) |
-| `install.sh` | Installerer avhengigheter og lenker inn filene over |
+| `.zshrc` | Loads Oh My Zsh, the theme and the plugins, and finally `~/.zshrc.local` if it exists |
+| `.p10k.zsh` | All prompt configuration (colors, segments, layout) |
+| `install.sh` | Installs dependencies and symlinks the files above |
 
-## Sette opp en ny maskin
+## Setting up a new machine
 
 ### Debian/Ubuntu
 
 ```sh
-su -c 'apt install zsh git'        # eller: sudo apt install zsh git
+su -c 'apt install zsh git'        # or: sudo apt install zsh git
 git clone https://github.com/mojaco/dotfiles.git ~/dotfiles
 ~/dotfiles/install.sh
-chsh -s /usr/bin/zsh               # gjør zsh til standardskall
+chsh -s /usr/bin/zsh               # make zsh the default shell
 ```
 
-Logg ut og inn igjen. Første oppstart kan laste ned `gitstatusd` (hjelpeprogram for git-status) – det skjer bare én gang.
+Log out and back in. The first start may download `gitstatusd` (a helper for git status). This only happens once.
 
 ### macOS
 
-zsh er allerede standardskall.
+zsh is already the default shell.
 
 ```sh
 git clone https://github.com/mojaco/dotfiles.git ~/dotfiles
 ~/dotfiles/install.sh
 ```
 
-### Container (Docker o.l.)
+### Containers (Docker etc.)
 
-Repoet er offentlig, så kloning krever ingen GitHub-innlogging. Containere kjører som regel som root uten `sudo` og `chsh`, så start zsh direkte i stedet:
+The repo is public, so cloning needs no GitHub login. Containers usually run as root without `sudo` or `chsh`, so start zsh directly instead:
 
 ```sh
 apt-get update && apt-get install -y zsh git ca-certificates
@@ -60,7 +60,7 @@ git clone https://github.com/mojaco/dotfiles.git ~/dotfiles
 exec zsh
 ```
 
-Eller i en `Dockerfile`:
+Or in a `Dockerfile`:
 
 ```dockerfile
 RUN apt-get update && apt-get install -y --no-install-recommends zsh git ca-certificates \
@@ -70,79 +70,86 @@ SHELL ["/bin/zsh", "-c"]
 CMD ["zsh"]
 ```
 
-Meldingen om `chsh` fra `install.sh` kan ignoreres i en container. `gitstatusd` lastes ned første gang zsh starter, så containeren trenger internett da.
+The `chsh` reminder from `install.sh` can be ignored in a container. `gitstatusd` is downloaded the first time zsh starts, so the container needs internet access then.
 
-Repoet kan ligge hvor som helst – `install.sh` lenker til mappen det selv ligger i.
-Standard er `~/dotfiles`. Unntak: på dev-maskinen ligger det i `/opt/development/dotfiles`
-sammen med de andre prosjektene.
+The repo can live anywhere – `install.sh` links to the directory it is in.
+The default is `~/dotfiles`. Exception: on the dev machine it lives in `/opt/development/dotfiles`
+alongside the other projects.
 
-### Hva `install.sh` gjør
+### What `install.sh` does
 
-1. Kloner (eller oppdaterer, hvis de finnes) Oh My Zsh, Powerlevel10k og de to pluginene til `~/.oh-my-zsh`.
-2. Erstatter `~/.zshrc` og `~/.p10k.zsh` med **symlenker** inn i repoet. Eksisterende filer flyttes til `*.bak-<tidsstempel>`.
-3. Minner deg på å kjøre `chsh` hvis zsh ikke er standardskall.
+1. Clones (or updates, if already present) Oh My Zsh, Powerlevel10k and the two plugins into `~/.oh-my-zsh`.
+2. Replaces `~/.zshrc` and `~/.p10k.zsh` with **symlinks** into the repo. Existing files are moved to `*.bak-<timestamp>`.
+3. Reminds you to run `chsh` if zsh is not the default shell.
 
-Skriptet kan trygt kjøres flere ganger.
+The script is safe to run multiple times.
 
 ## Font
 
-Ikonene og pilene i prompten krever en **Nerd Font** i terminalprogrammet – men bare på maskinen du sitter ved. Servere du SSH-er til trenger ingen font.
+The icons and arrows in the prompt need a **Nerd Font** in the terminal app – but only on the machine you are sitting at. Servers you SSH into don't need any font.
 
-I bruk: **Hack Nerd Font**, størrelse 14 (`brew install --cask font-hack-nerd-font`). Velg den i iTerm2 under *Settings → Profiles → Text → Font*. Andre Nerd Fonts fungerer også, f.eks. MesloLGS NF som Powerlevel10k anbefaler.
+In use: **Hack Nerd Font**, size 14 (`brew install --cask font-hack-nerd-font`). Select it in iTerm2 under *Settings → Profiles → Text → Font*. Other Nerd Fonts work too, e.g. MesloLGS NF, which Powerlevel10k recommends.
 
-Fonten settes per iTerm2-profil, så sjekk at alle profilene du bruker har en Nerd Font.
+The font is set per iTerm2 profile, so check that every profile you use has a Nerd Font.
 
-## Endre oppsettet
+## Changing the setup
 
-Ting som bare gjelder én maskin (f.eks. `brew`, aliaser for en server) legges i `~/.zshrc.local`.
-Den ligger ikke i repoet og lastes sist i `.zshrc`.
+Anything specific to one machine (e.g. `brew`, aliases for a server) goes in `~/.zshrc.local`.
+It is not in the repo and is loaded last by `.zshrc`.
 
-> **Repoet er offentlig.** Ikke legg inn passord, tokens, interne IP-adresser eller vertsnavn. Slikt hører hjemme i `~/.zshrc.local`.
+> **This repo is public.** Don't commit passwords, tokens, internal IP addresses or hostnames. Those belong in `~/.zshrc.local`.
 
-Fordi `~/.zshrc` og `~/.p10k.zsh` er symlenker, endrer du filene i repoet direkte:
+Since `~/.zshrc` and `~/.p10k.zsh` are symlinks, you edit the files in the repo directly:
 
 ```sh
-$EDITOR ~/.p10k.zsh                 # gjør endringen
-source ~/.p10k.zsh                  # se resultatet (eller åpne ny fane)
-cd ~/dotfiles && git commit -am "Beskriv endringen" && git push
+cd ~/dotfiles && git pull           # get the latest version first
+$EDITOR ~/.p10k.zsh                 # make the change
+source ~/.p10k.zsh                  # see the result (or open a new tab)
+git commit -am "Describe the change" && git push
 ```
 
-Hent endringen på de andre maskinene:
+Pushing requires a GitHub login on that machine. When committing from a new machine, set the GitHub noreply address first so your private email doesn't end up in the history:
+
+```sh
+git -C ~/dotfiles config user.email 3873652+mojaco@users.noreply.github.com
+```
+
+Pull the change on the other machines:
 
 ```sh
 cd ~/dotfiles && git pull
 ```
 
-Åpne et nytt terminalvindu etterpå.
+Open a new terminal window afterwards.
 
-### Nyttige innstillinger i `.p10k.zsh`
+### Useful settings in `.p10k.zsh`
 
-| Innstilling | Effekt |
+| Setting | Effect |
 |---|---|
-| `POWERLEVEL9K_LEFT_PROMPT_ELEMENTS` | Segmenter til venstre. `newline` gir linjeskift, `prompt_char` er `❯` |
-| `POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS` | Segmenter til høyre (status, tid, `context` = bruker@maskin osv.) |
-| `POWERLEVEL9K_PROMPT_ADD_NEWLINE` | Tom linje før hver prompt (`true`/`false`) |
-| `POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND` | Farge på maskinnavnet over SSH (nå `214`, oransje) |
-| `POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=` | Skjuler maskinnavnet lokalt. Fjern linjen for å alltid vise det |
-| `POWERLEVEL9K_ICON_PADDING` | Luft rundt ikonene |
-| `POWERLEVEL9K_DIR_MAX_LENGTH` | Hvor lang mappestien kan bli før den forkortes |
+| `POWERLEVEL9K_LEFT_PROMPT_ELEMENTS` | Segments on the left. `newline` adds a line break, `prompt_char` is `❯` |
+| `POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS` | Segments on the right (status, time, `context` = user@host, etc.) |
+| `POWERLEVEL9K_PROMPT_ADD_NEWLINE` | Blank line before each prompt (`true`/`false`) |
+| `POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND` | Color of the hostname over SSH (currently `214`, orange) |
+| `POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=` | Hides the hostname locally. Remove the line to always show it |
+| `POWERLEVEL9K_ICON_PADDING` | Space around icons |
+| `POWERLEVEL9K_DIR_MAX_LENGTH` | How long the directory path can get before it is shortened |
 
-Farger er tall 0–255. Se alle med:
+Colors are numbers 0–255. Show them all with:
 
 ```sh
 for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done
 ```
 
-### ⚠️ Unngå `p10k configure`
+### ⚠️ Avoid `p10k configure`
 
-Veiviseren skriver `.p10k.zsh` helt på nytt, og justeringene over (to linjer, tom linje, oransje maskinnavn) forsvinner. Rediger heller filen direkte. Kjører du den likevel, se hva som endret seg med `git diff` og angre med `git checkout .p10k.zsh`.
+The wizard rewrites `.p10k.zsh` from scratch, and the customizations above (two lines, blank line, orange hostname) are lost. Edit the file directly instead. If you do run it, check what changed with `git diff` and undo with `git checkout .p10k.zsh`.
 
-## Feilsøking
+## Troubleshooting
 
-| Problem | Løsning |
+| Problem | Fix |
 |---|---|
-| Firkanter eller rare tegn i prompten | Terminalprogrammet mangler Nerd Font – se [Font](#font) |
-| `git push` spør om brukernavn / *could not read Username* | Kloning og `git pull` trenger ingen innlogging, men `push` gjør det. Enklest: `gh auth login` og `gh auth setup-git` (macOS: `brew install gh`) |
-| `git pull` feiler med *divergent branches* etter historikk-omskriving | `git fetch && git reset --hard origin/main` (lokale, ikke-pushede endringer forsvinner) |
-| Fortsatt bash etter installasjon | Kjør `chsh -s "$(command -v zsh)"` og logg ut og inn |
-| Vil tilbake til gammelt oppsett | Gjenopprett `~/.zshrc.bak-*` og `~/.p10k.zsh.bak-*` |
+| Boxes or odd characters in the prompt | The terminal app lacks a Nerd Font – see [Font](#font) |
+| `git push` asks for a username / *could not read Username* | Cloning and `git pull` need no login, but `push` does. Easiest: `gh auth login` and `gh auth setup-git` (macOS: `brew install gh`) |
+| `git pull` fails with *divergent branches* after a history rewrite | `git fetch && git reset --hard origin/main` (local unpushed changes are lost) |
+| Still bash after installing | Run `chsh -s "$(command -v zsh)"` and log out and back in |
+| Want the old setup back | Restore `~/.zshrc.bak-*` and `~/.p10k.zsh.bak-*` |
